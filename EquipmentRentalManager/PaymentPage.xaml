@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="EquipmentRentalManager.PaymentPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:EquipmentRentalManager"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Danh sách hợp đồng đã trả -->
+        <DataGrid x:Name="dgContracts" Grid.Row="0" AutoGenerateColumns="False"
+                  SelectionMode="Single" IsReadOnly="True" Margin="0 0 0 10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding ContractId}" Width="50"/>
+                <DataGridTextColumn Header="Từ ngày" Binding="{Binding StartDate}" Width="100"/>
+                <DataGridTextColumn Header="Đến ngày" Binding="{Binding EndDate}" Width="100"/>
+                <DataGridTextColumn Header="Tổng tiền" Binding="{Binding TotalAmount}" Width="100"/>
+                <DataGridTextColumn Header="Trạng thái" Binding="{Binding Status}" Width="120"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button Content="Thanh toán" Width="150" Height="35"
+                Grid.Row="1" HorizontalAlignment="Left" Click="BtnPay_Click"/>
+    </Grid>
+</UserControl>
