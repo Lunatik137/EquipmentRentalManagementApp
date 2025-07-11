@@ -23,14 +23,19 @@ namespace Services
 
         public void Delete(int id) => _repo.Delete(id);
 
-        public bool IsAvailable(int equipmentId, int quantity)
+        public List<Equipment> GetAvailable()
         {
-            var equipment = _repo.Get(equipmentId);
-            return equipment != null
-                && equipment.Status?.ToLower() == "active"
-                && equipment.QuantityAvailable >= quantity;
+            return _repo.GetAll()
+                .Where(e => e.Status?.ToLower() == "active" && e.QuantityAvailable > 0)
+                .ToList();
         }
 
+        public List<Equipment> SearchByName(string keyword)
+        {
+            return _repo.GetAll()
+                .Where(e => e.Name != null && e.Name.ToLower().Contains(keyword.ToLower()))
+                .ToList();
+        }
 
     }
 }

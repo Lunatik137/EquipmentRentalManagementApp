@@ -14,18 +14,25 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBox x:Name="txtSearch" Width="250" Height="30" Margin="0 0 0 10"
-                 TextChanged="txtSearch_TextChanged"/>
+        <TextBlock Text="Danh sách Thiết bị" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
 
-        <DataGrid x:Name="dgEquipments" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True"
-                  SelectionMode="Single" Margin="0">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10" Grid.Row="0">
+            <TextBox x:Name="txtSearch" Width="250" Height="30" Margin="5"
+         TextChanged="txtSearch_TextChanged"/>
+            <Button Content="Tạo mới" Click="BtnCreate_Click" Margin="5"/>
+            <Button Content="Sửa" Click="BtnUpdate_Click" Margin="5"/>
+            <Button Content="Xóa" Click="BtnDelete_Click" Margin="5"/>
+        </StackPanel>
+
+        <DataGrid x:Name="dgEquipments" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding EquipmentId}" Width="50"/>
+                <DataGridTextColumn Header="ID" Binding="{Binding EquipmentId}" Width="Auto"/>
                 <DataGridTextColumn Header="Tên thiết bị" Binding="{Binding Name}" Width="*"/>
-                <DataGridTextColumn Header="Loại" Binding="{Binding Category}" Width="100"/>
-                <DataGridTextColumn Header="Giá/ngày" Binding="{Binding DailyRate}" Width="100"/>
-                <DataGridTextColumn Header="Còn lại" Binding="{Binding QuantityAvailable}" Width="80"/>
-                <DataGridTextColumn Header="Trạng thái" Binding="{Binding Status}" Width="100"/>
+                <DataGridTextColumn Header="Mô tả" Binding="{Binding Description}" Width="2*"/>
+                <DataGridTextColumn Header="Loại" Binding="{Binding Category}" Width="*"/>
+                <DataGridTextColumn Header="Trạng thái" Binding="{Binding Status}" Width="*"/>
+                <DataGridTextColumn Header="Số lượng còn" Binding="{Binding QuantityAvailable}" Width="*"/>
+                <DataGridTextColumn Header="Giá thuê/ngày" Binding="{Binding DailyRate}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

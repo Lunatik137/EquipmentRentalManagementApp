@@ -24,11 +24,7 @@ namespace EquipmentRentalManager
 
         private void LoadContracts()
         {
-            var unpaid = _contractService.GetByOwnerId(_owner.OwnerId)
-                .Where(c => c.Status == "Đã trả")
-                .ToList();
-
-            dgContracts.ItemsSource = unpaid;
+            dgContracts.ItemsSource = _contractService.GetReturnedContractsByOwnerId(_owner.OwnerId);
         }
 
         private void BtnPay_Click(object sender, RoutedEventArgs e)

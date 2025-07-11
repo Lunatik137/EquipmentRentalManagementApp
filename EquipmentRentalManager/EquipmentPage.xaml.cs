@@ -1,39 +1,66 @@
-﻿using DataAccess.Models;
-using Services;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Windows;
 using System.Windows.Controls;
+using Services;
+using DataAccess.Models;
 
 namespace EquipmentRentalManager
 {
     public partial class EquipmentPage : UserControl
     {
         private readonly EquipmentService _equipmentService;
-        private List<Equipment> _allEquipments;
 
         public EquipmentPage()
         {
             InitializeComponent();
             _equipmentService = new EquipmentService();
-            LoadData();
+            LoadEquipments();
         }
 
-        private void LoadData()
+        private void LoadEquipments()
         {
-            _allEquipments = _equipmentService.GetAll()
-                .Where(e => e.Status?.ToLower() == "active" && e.QuantityAvailable > 0)
-                .ToList();
+            dgEquipments.ItemsSource = _equipmentService.GetAll();
+        }
 
-            dgEquipments.ItemsSource = _allEquipments;
+        private void BtnCreate_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Tính năng thêm thiết bị đang được phát triển.");
+        }
+
+        private void BtnUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgEquipments.SelectedItem is Equipment selected)
+            {
+                MessageBox.Show($"Sửa thiết bị: {selected.Name}");
+            }
+        }
+
+        private void BtnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgEquipments.SelectedItem is Equipment selected)
+            {
+                var confirm = MessageBox.Show($"Xác nhận xóa thiết bị: {selected.Name}?", "Xác nhận", MessageBoxButton.YesNo);
+                if (confirm == MessageBoxResult.Yes)
+                {
+                    _equipmentService.Delete(selected.EquipmentId);
+                    LoadEquipments();
+                }
+            }
         }
 
         private void txtSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string keyword = txtSearch.Text.ToLower();
-            dgEquipments.ItemsSource = _allEquipments
-                .Where(e => e.Name?.ToLower().Contains(keyword) == true ||
-                            e.Category?.ToLower().Contains(keyword) == true)
-                .ToList();
+            string keyword = txtSearch.Text.Trim();
+
+            if (string.IsNullOrEmpty(keyword))
+            {
+                dgEquipments.ItemsSource = _equipmentService.GetAll();
+            }
+            else
+            {
+                dgEquipments.ItemsSource = _equipmentService.SearchByName(keyword);
+            }
         }
+
+
     }
 }

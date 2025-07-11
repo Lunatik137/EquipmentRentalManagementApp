@@ -56,5 +56,12 @@ namespace Services
             _repo.Update(contract);
         }
 
+        public List<RentalContract> GetReturnedContractsByOwnerId(int ownerId)
+        {
+            return _repo.GetByOwnerId(ownerId)
+                        .Where(c => c.Status != null && c.Status.ToLower() == "đã trả")
+                        .ToList();
+        }
+
     }
 }

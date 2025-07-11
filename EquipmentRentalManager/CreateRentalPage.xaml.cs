@@ -26,9 +26,7 @@ namespace EquipmentRentalManager
 
         private void LoadEquipments()
         {
-            dgEquipments.ItemsSource = _equipmentService.GetAll()
-                .Where(e => e.Status?.ToLower() == "active" && e.QuantityAvailable > 0)
-                .ToList();
+            dgEquipments.ItemsSource = _equipmentService.GetAvailable();
         }
 
         private void CreateContract_Click(object sender, RoutedEventArgs e)
@@ -57,7 +55,6 @@ namespace EquipmentRentalManager
                 return;
             }
 
-            // Tạo hợp đồng trước
             var contract = new RentalContract
             {
                 OwnerId = _owner.OwnerId,
@@ -68,7 +65,6 @@ namespace EquipmentRentalManager
             };
             _contractService.Create(contract);
 
-            // Tạo rental detail có kiểm tra tồn kho
             var detail = new RentalDetail
             {
                 ContractId = contract.ContractId,
@@ -82,7 +78,7 @@ namespace EquipmentRentalManager
             if (success)
             {
                 MessageBox.Show("Tạo hợp đồng thuê thành công!");
-                LoadEquipments(); // cập nhật lại tồn kho
+                LoadEquipments();
                 txtQuantity.Clear();
                 dpStartDate.SelectedDate = null;
                 dpEndDate.SelectedDate = null;
