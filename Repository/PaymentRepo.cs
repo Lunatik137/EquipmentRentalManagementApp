@@ -1,6 +1,5 @@
 ﻿using DataAccess.Models;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
@@ -13,24 +12,14 @@ namespace Repositories
             context = new EquipmentRentalManagementContext();
         }
 
-        public List<Payment> GetAll()
+        public IQueryable<Payment> GetAll()
         {
-            return context.Payments.ToList();
+            return context.Payments.Include(p => p.Contract).ThenInclude(c => c.User);
         }
 
         public Payment Get(int id)
         {
             return context.Payments.FirstOrDefault(x => x.PaymentId == id);
-        }
-
-        public void Delete(int id)
-        {
-            var p = Get(id);
-            if (p != null)
-            {
-                context.Payments.Remove(p);
-                context.SaveChanges();
-            }
         }
 
         public void Create(Payment payment)
@@ -52,9 +41,28 @@ namespace Repositories
             }
         }
 
-        public List<Payment> GetByContractId(int contractId)
+        public void Delete(int id)
         {
-            return context.Payments.Where(p => p.ContractId == contractId).ToList();
+            var p = Get(id);
+            if (p != null)
+            {
+                context.Payments.Remove(p);
+                context.SaveChanges();
+            }
+        }
+
+        public IQueryable<Payment> GetByContractId(int contractId)
+        {
+            return context.Payments.Where(p => p.ContractId == contractId)
+                .Include(p => p.Contract).ThenInclude(c => c.User);
+        }
+
+        public decimal GetTotalPaidForContract(int contractId)
+        {
+            return context.Payments
+                .Where(p => p.ContractId == contractId && p.AmountPaid.HasValue)
+                .DefaultIfEmpty(new Payment { AmountPaid = 0m })
+                .Sum(p => p.AmountPaid ?? 0m);
         }
     }
 }

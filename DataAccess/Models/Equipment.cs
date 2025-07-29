@@ -13,7 +13,7 @@ public partial class Equipment
 
     public string? Category { get; set; }
 
-    public string? Status { get; set; }
+    public bool Status { get; set; }
 
     public int? QuantityAvailable { get; set; }
 

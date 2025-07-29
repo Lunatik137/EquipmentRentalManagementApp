@@ -1,48 +1,74 @@
 ﻿using DataAccess.Models;
+using Services;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace EquipmentRentalManager
 {
     public partial class MainWindow : Window
     {
-        private readonly Owner _loggedInOwner;
+        private User _currentUser;
 
-        public MainWindow(Owner owner)
+        public MainWindow(User user)
         {
             InitializeComponent();
-            _loggedInOwner = owner;
-
-            MainContent.Content = new EquipmentPage();
+            _currentUser = user;
+            LoadPage(new CreateRentalPage(user));
+            UpdateUIForRole();
         }
 
-        private void BtnEquipment_Click(object sender, RoutedEventArgs e)
+        private void LoadPage(UserControl page)
         {
-            MainContent.Content = new EquipmentPage();
+            MainContent.Content = page;
+        }
+
+        private void UpdateUIForRole()
+        {
+            if (_currentUser != null && new UserService().IsOwner(_currentUser))
+            {
+                BtnStaffManagement.Visibility = Visibility.Visible;
+            }
         }
 
         private void BtnCreateRental_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new CreateRentalPage(_loggedInOwner);
+            LoadPage(new CreateRentalPage(_currentUser));
         }
 
-        private void BtnContracts_Click(object sender, RoutedEventArgs e)
+        private void BtnEquipment_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new ContractListPage(_loggedInOwner);
+            LoadPage(new EquipmentPage(_currentUser));
         }
 
-        private void BtnPayments_Click(object sender, RoutedEventArgs e)
+        private void BtnStaffManagement_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new PaymentPage(_loggedInOwner);
+            LoadPage(new StaffManagementPage(_currentUser));
+        }
+
+        private void BtnContractList_Click(object sender, RoutedEventArgs e)
+        {
+            LoadPage(new ContractListPage(_currentUser));
+        }
+
+        private void BtnInvoiceList_Click(object sender, RoutedEventArgs e)
+        {
+            LoadPage(new InvoiceListPage(_currentUser));
+        }
+
+        private void BtnPayment_Click(object sender, RoutedEventArgs e)
+        {
+            LoadPage(new PaymentPage(_currentUser));
         }
 
         private void BtnProfile_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new ProfilePage(_loggedInOwner);
+            LoadPage(new ProfilePage(_currentUser));
         }
 
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
         {
-            new LoginWindow().Show();
+            var loginWindow = new LoginWindow();
+            loginWindow.Show();
             this.Close();
         }
     }

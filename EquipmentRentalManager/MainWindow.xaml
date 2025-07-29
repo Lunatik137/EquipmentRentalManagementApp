@@ -5,24 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EquipmentRentalManager"
         mc:Ignorable="d"
-        Title="Equipment Rental Manager" Height="500" Width="800" WindowStartupLocation="CenterScreen">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="180"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        Title="Equipment Rental Manager" Height="600" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <StackPanel Background="#2B2B2B" Orientation="Vertical">
-            <TextBlock Text="Menu" Foreground="White" FontSize="18" FontWeight="Bold"
-                       HorizontalAlignment="Center" Margin="10"/>
-            <Button Content="Thiết bị" Margin="10" Click="BtnEquipment_Click"/>
-            <Button Content="Thuê thiết bị" Margin="10" Click="BtnCreateRental_Click"/>
-            <Button Content="Hợp đồng của tôi" Margin="10" Click="BtnContracts_Click"/>
-            <Button Content="Thanh toán" Margin="10" Click="BtnPayments_Click"/>
-            <Button Content="Thông tin cá nhân" Margin="10" Click="BtnProfile_Click"/>
-            <Button Content="Đăng xuất" Margin="10" Click="BtnLogout_Click"/>
+        <!-- Menu điều hướng -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10">
+            <Button Content="Tạo hợp đồng" Click="BtnCreateRental_Click" Margin="5" Width="120"/>
+            <Button Content="Thiết bị" Click="BtnEquipment_Click" Margin="5" Width="120"/>
+            <Button x:Name="BtnStaffManagement" Content="Quản lý nhân viên" Click="BtnStaffManagement_Click" Margin="5" Width="120" Visibility="Collapsed"/>
+            <Button Content="Danh sách hợp đồng" x:Name="BtnContractList" Click="BtnContractList_Click" Margin="5" Width="120"/>
+            <Button Content="Danh sách hóa đơn" x:Name="BtnInvoiceList" Click="BtnInvoiceList_Click" Margin="5" Width="120"/>
+            <Button Content="Thanh toán" Click="BtnPayment_Click" Margin="5" Width="120"/>
+            <Button Content="Thông tin cá nhân" Click="BtnProfile_Click" Margin="5" Width="120"/>
+            <Button Content="Đăng xuất" Click="BtnLogout_Click" Margin="5" Width="120"/>
         </StackPanel>
 
-        <ContentControl x:Name="MainContent" Grid.Column="1" Margin="10"/>
+        <!-- Nội dung chính -->
+        <ContentControl x:Name="MainContent" Grid.Row="1"/>
     </Grid>
 </Window>

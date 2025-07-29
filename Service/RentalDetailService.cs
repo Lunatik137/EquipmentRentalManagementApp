@@ -1,6 +1,7 @@
 ﻿using DataAccess.Models;
 using Repositories;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Services
 {
@@ -13,60 +14,53 @@ namespace Services
             _repo = new RentalDetailRepo();
         }
 
-        public List<RentalDetail> GetAll() => _repo.GetAll();
-
-        public RentalDetail Get(int id) => _repo.Get(id);
-
-        public void Create(RentalDetail detail) => _repo.Create(detail);
-
-        public void Update(RentalDetail detail) => _repo.Update(detail);
-
-        public void Delete(int id) => _repo.Delete(id);
-
-        public List<RentalDetail> GetByContractId(int contractId) => _repo.GetByContractId(contractId);
-
-        public bool CreateRentalDetailWithInventoryCheck(RentalDetail detail)
+        public List<RentalDetail> GetAll()
         {
-            if (detail.EquipmentId == null || detail.ContractId == null || detail.Quantity == null)
-                return false;
+            return _repo.GetAll().ToList();
+        }
 
-            var equipmentRepo = new EquipmentRepo();
-            var equipment = equipmentRepo.Get(detail.EquipmentId.Value);
+        public RentalDetail Get(int id)
+        {
+            return _repo.Get(id);
+        }
 
-            if (equipment == null || equipment.QuantityAvailable < detail.Quantity || equipment.Status?.ToLower() != "active")
-            {
-                return false;
-            }
-
-            equipment.QuantityAvailable -= detail.Quantity;
-            equipmentRepo.Update(equipment);
-
+        public void Create(RentalDetail detail)
+        {
             _repo.Create(detail);
+        }
 
-            var contractService = new RentalContractService();
-            contractService.RecalculateTotalAmount(detail.ContractId.Value);
+        public void Update(RentalDetail detail)
+        {
+            _repo.Update(detail);
+        }
 
-            return true;
+        public void Delete(int id)
+        {
+            _repo.Delete(id);
+        }
+
+        public List<RentalDetail> GetByContractId(int contractId)
+        {
+            return _repo.GetByContractId(contractId).ToList();
         }
 
         public void ReturnRentalDetail(int rentalDetailId)
         {
             var detail = _repo.Get(rentalDetailId);
-            if (detail == null || detail.EquipmentId == null || detail.ContractId == null || detail.Quantity == null) return;
-
-            var equipmentRepo = new EquipmentRepo();
-            var equipment = equipmentRepo.Get(detail.EquipmentId.Value);
-            if (equipment != null)
+            if (detail != null)
             {
-                equipment.QuantityAvailable += detail.Quantity;
-                equipmentRepo.Update(equipment);
+                if (detail.EquipmentId.HasValue)
+                {
+                    var equipmentRepo = new EquipmentRepo();
+                    var equipment = equipmentRepo.Get(detail.EquipmentId.Value);
+                    if (equipment != null)
+                    {
+                        equipment.QuantityAvailable += (int)(detail.Quantity ?? 0); 
+                        equipmentRepo.Update(equipment);
+                    }
+                }
+                _repo.Delete(rentalDetailId);
             }
-
-            _repo.Delete(rentalDetailId);
-
-            var contractService = new RentalContractService();
-            contractService.RecalculateTotalAmount(detail.ContractId.Value);
         }
-
     }
 }

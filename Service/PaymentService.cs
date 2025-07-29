@@ -14,31 +14,39 @@ namespace Services
             _repo = new PaymentRepo();
         }
 
-        public List<Payment> GetAll() => _repo.GetAll();
-
-        public Payment Get(int id) => _repo.Get(id);
-
-        public void Delete(int id) => _repo.Delete(id);
-
-        public void Create(Payment payment) => _repo.Create(payment);
-
-        public bool CreateSafe(Payment payment)
+        public List<Payment> GetAll()
         {
-            if (payment.AmountPaid == null || payment.AmountPaid <= 0)
-                return false;
-
-            _repo.Create(payment);
-            return true;
+            return _repo.GetAll().ToList();
         }
 
-        public void Update(Payment payment) => _repo.Update(payment);
+        public Payment Get(int id)
+        {
+            return _repo.Get(id);
+        }
 
-        public List<Payment> GetByContractId(int contractId) => _repo.GetByContractId(contractId);
+        public void Create(Payment payment)
+        {
+            _repo.Create(payment);
+        }
+
+        public void Update(Payment payment)
+        {
+            _repo.Update(payment);
+        }
+
+        public void Delete(int id)
+        {
+            _repo.Delete(id);
+        }
+
+        public List<Payment> GetByContractId(int contractId)
+        {
+            return _repo.GetByContractId(contractId).ToList();
+        }
 
         public decimal GetTotalPaidForContract(int contractId)
         {
-            var payments = _repo.GetByContractId(contractId);
-            return payments.Sum(p => p.AmountPaid ?? 0);
+            return _repo.GetTotalPaidForContract(contractId);
         }
     }
 }

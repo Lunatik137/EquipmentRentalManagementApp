@@ -1,6 +1,5 @@
 ﻿using DataAccess.Models;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
@@ -13,24 +12,14 @@ namespace Repositories
             context = new EquipmentRentalManagementContext();
         }
 
-        public List<Equipment> GetAll()
+        public IQueryable<Equipment> GetAll()
         {
-            return context.Equipment.ToList();
+            return context.Equipment;
         }
 
         public Equipment Get(int id)
         {
             return context.Equipment.FirstOrDefault(x => x.EquipmentId == id);
-        }
-
-        public void Delete(int id)
-        {
-            var eq = Get(id);
-            if (eq != null)
-            {
-                context.Equipment.Remove(eq);
-                context.SaveChanges();
-            }
         }
 
         public void Create(Equipment equipment)
@@ -41,18 +30,33 @@ namespace Repositories
 
         public void Update(Equipment equipment)
         {
-            var eq = Get(equipment.EquipmentId);
-            if (eq != null)
+            var e = Get(equipment.EquipmentId);
+            if (e != null)
             {
-                eq.Name = equipment.Name;
-                eq.Description = equipment.Description;
-                eq.Category = equipment.Category;
-                eq.Status = equipment.Status;
-                eq.DailyRate = equipment.DailyRate;
-                eq.PurchaseDate = equipment.PurchaseDate;
-                eq.QuantityAvailable = equipment.QuantityAvailable;
+                e.Name = equipment.Name;
+                e.Description = equipment.Description;
+                e.Category = equipment.Category;
+                e.Status = equipment.Status;
+                e.QuantityAvailable = equipment.QuantityAvailable;
+                e.DailyRate = equipment.DailyRate;
+                e.PurchaseDate = equipment.PurchaseDate;
                 context.SaveChanges();
             }
+        }
+
+        public void Delete(int id)
+        {
+            var e = Get(id);
+            if (e != null)
+            {
+                context.Equipment.Remove(e);
+                context.SaveChanges();
+            }
+        }
+
+        public IQueryable<Equipment> SearchByName(string keyword)
+        {
+            return context.Equipment.Where(e => e.Name.Contains(keyword));
         }
     }
 }

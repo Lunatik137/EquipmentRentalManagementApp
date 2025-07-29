@@ -1,6 +1,5 @@
 ﻿using DataAccess.Models;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
@@ -13,24 +12,14 @@ namespace Repositories
             context = new EquipmentRentalManagementContext();
         }
 
-        public List<RentalDetail> GetAll()
+        public IQueryable<RentalDetail> GetAll()
         {
-            return context.RentalDetails.ToList();
+            return context.RentalDetails.Include(d => d.Equipment);
         }
 
         public RentalDetail Get(int id)
         {
             return context.RentalDetails.FirstOrDefault(x => x.RentalDetailId == id);
-        }
-
-        public void Delete(int id)
-        {
-            var d = Get(id);
-            if (d != null)
-            {
-                context.RentalDetails.Remove(d);
-                context.SaveChanges();
-            }
         }
 
         public void Create(RentalDetail detail)
@@ -52,9 +41,19 @@ namespace Repositories
             }
         }
 
-        public List<RentalDetail> GetByContractId(int contractId)
+        public void Delete(int id)
         {
-            return context.RentalDetails.Where(d => d.ContractId == contractId).ToList();
+            var d = Get(id);
+            if (d != null)
+            {
+                context.RentalDetails.Remove(d);
+                context.SaveChanges();
+            }
+        }
+
+        public IQueryable<RentalDetail> GetByContractId(int contractId)
+        {
+            return context.RentalDetails.Where(d => d.ContractId == contractId).Include(d => d.Equipment);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DataAccess.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,9 +14,9 @@ namespace Repositories
             context = new EquipmentRentalManagementContext();
         }
 
-        public List<RentalContract> GetAll()
+        public IQueryable<RentalContract> GetAll()
         {
-            return context.RentalContracts.ToList();
+            return context.RentalContracts.Include(c => c.User);
         }
 
         public RentalContract Get(int id)
@@ -44,7 +45,7 @@ namespace Repositories
             var c = Get(contract.ContractId);
             if (c != null)
             {
-                c.OwnerId = contract.OwnerId;
+                c.UserId = contract.UserId;
                 c.StartDate = contract.StartDate;
                 c.EndDate = contract.EndDate;
                 c.ReturnDate = contract.ReturnDate;
@@ -54,9 +55,16 @@ namespace Repositories
             }
         }
 
-        public List<RentalContract> GetByOwnerId(int ownerId)
+        public IQueryable<RentalContract> GetByOwnerId(int userId)
         {
-            return context.RentalContracts.Where(c => c.OwnerId == ownerId).ToList();
+            return context.RentalContracts.Where(c => c.UserId == userId).Include(c => c.User);
+        }
+
+        public IQueryable<RentalContract> SearchByUserId(int userId, string keyword)
+        {
+            return context.RentalContracts
+                .Where(c => c.UserId == userId && (c.ContractId.ToString().Contains(keyword) || c.Status.Contains(keyword)))
+                .Include(c => c.User);
         }
     }
 }

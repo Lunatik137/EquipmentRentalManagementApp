@@ -7,7 +7,7 @@ public partial class RentalContract
 {
     public int ContractId { get; set; }
 
-    public int? OwnerId { get; set; }
+    public int? UserId { get; set; }
 
     public DateOnly? StartDate { get; set; }
 
@@ -19,9 +19,9 @@ public partial class RentalContract
 
     public string? Status { get; set; }
 
-    public virtual Owner? Owner { get; set; }
-
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
     public virtual ICollection<RentalDetail> RentalDetails { get; set; } = new List<RentalDetail>();
+
+    public virtual User? User { get; set; }
 }

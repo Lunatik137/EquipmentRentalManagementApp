@@ -1,29 +1,34 @@
-﻿using Service;
-using Services;
+﻿using Services;
 using System.Windows;
 
 namespace EquipmentRentalManager
 {
     public partial class LoginWindow : Window
     {
-        private OwnerService _loggedInOwner;
+        private readonly UserService _userService;
 
         public LoginWindow()
         {
             InitializeComponent();
-            _loggedInOwner = new OwnerService();
+            _userService = new UserService();
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            var username = txtUsername.Text.Trim();
+            var username = txtUsername.Text?.Trim() ?? string.Empty;
             var password = txtPassword.Password;
 
-            var owner = _loggedInOwner.Login(username, password);
-            if (owner != null)
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                MessageBox.Show($"Welcome, {owner.FullName}!", "Login Successful");
-                MainWindow main = new MainWindow(owner);
+                MessageBox.Show("Vui lòng nhập tên đăng nhập và mật khẩu.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var user = _userService.GetByUsername(username);
+            if (user != null && user.Password == password) 
+            {
+                MessageBox.Show($"Welcome, {user.FullName}!", "Login Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                MainWindow main = new MainWindow(user);
                 main.Show();
                 this.Close();
             }
@@ -32,27 +37,28 @@ namespace EquipmentRentalManager
                 MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+
         private void ForgotPassword_Click(object sender, RoutedEventArgs e)
         {
-            var username = txtUsername.Text.Trim();
+            var username = txtUsername.Text?.Trim() ?? string.Empty;
             if (string.IsNullOrEmpty(username))
             {
-                MessageBox.Show("Vui lòng nhập tên đăng nhập trước.");
+                MessageBox.Show("Vui lòng nhập tên đăng nhập trước.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            var ownerService = new OwnerService();
-            var owner = ownerService.GetByUsername(username);
-
-            if (owner == null)
+            var user = _userService.GetByUsername(username);
+            if (user == null)
             {
-                MessageBox.Show("Không tìm thấy tài khoản.");
+                MessageBox.Show("Không tìm thấy tài khoản.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            var resetWindow = new ResetPasswordWindow(owner);
-            resetWindow.ShowDialog();
+            var resetWindow = new ResetPasswordWindow(user);
+            if (resetWindow != null)
+            {
+                resetWindow.ShowDialog();
+            }
         }
-
     }
 }

@@ -1,0 +1,25 @@
+﻿<Window x:Class="EquipmentRentalManager.InvoiceDetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EquipmentRentalManager"
+        mc:Ignorable="d"
+        Title="Chi tiết Hóa đơn" Height="400" Width="600" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#E0E0E0"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="10">
+        <DataGrid x:Name="dgDetails" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Tên thiết bị" Binding="{Binding EquipmentName}" Width="2*"/>
+                <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity}" Width="*"/>
+                <DataGridTextColumn Header="Giá/ngày" Binding="{Binding RatePerDay, StringFormat={}{0:N0} VNĐ}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
