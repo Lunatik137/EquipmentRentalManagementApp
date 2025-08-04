@@ -59,5 +59,6 @@
                 <Button x:Name="BtnCancel" Content="Hủy" Click="BtnCancel_Click" Width="80"/>
             </StackPanel>
         </StackPanel>
+        <TextBox Name="count" HorizontalAlignment="Left" Margin="160,468,0,0" Grid.Row="1" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
     </Grid>
 </UserControl>

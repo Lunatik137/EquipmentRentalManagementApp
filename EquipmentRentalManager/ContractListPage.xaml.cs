@@ -32,7 +32,11 @@ namespace EquipmentRentalManager
 
         private void LoadContracts()
         {
-            dgContracts.ItemsSource = _contractService.GetAll().ToList(); // Hiển thị tất cả hợp đồng
+            DateOnly str = DateOnly.ParseExact("01/07/2025", "dd/MM/yyyy");
+            DateOnly end = DateOnly.ParseExact("31/07/2025", "dd/MM/yyyy");
+            dgContracts.ItemsSource = _contractService.GetAll().Where(c => c.StartDate >= str && c.EndDate <= end).ToList();
+            int totalContracts = dgContracts.Items.Count;
+            count.Text = totalContracts.ToString();
         }
 
         private void CheckPermissions()

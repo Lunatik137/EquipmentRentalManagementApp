@@ -96,6 +96,8 @@ VALUES
 (N'Chủ 1', 'owner1', 'ownerpass1', '0900000001', 'owner1@email.com', 1, 'Owner'),
 (N'Nhân viên 1', 'staff1', 'staffpass2', '0900000002', 'staff1@email.com', 1, 'Staff');
 
+select * from RentalContract
+
 select * from RentalDetail
 select * from RentalContract
 select * from Equipment
